@@ -7,7 +7,6 @@ import time
 import math
 import numpy as np 
 from sklearn.metrics import f1_score
-import networkx as nx 
 import warnings
 warnings.filterwarnings("ignore")
 

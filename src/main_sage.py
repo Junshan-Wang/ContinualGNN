@@ -7,7 +7,6 @@ import logging
 import time
 import numpy as np 
 from sklearn.metrics import f1_score, accuracy_score
-import networkx as nx 
 
 import torch
 import torch.nn as nn

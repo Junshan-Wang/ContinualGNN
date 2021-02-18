@@ -4,7 +4,6 @@ import numpy as np
 import logging
 import random
 from collections import defaultdict
-import networkx as nx 
 
 from .data_handler import DataHandler
 
