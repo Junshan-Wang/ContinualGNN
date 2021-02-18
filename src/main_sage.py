@@ -41,8 +41,8 @@ if __name__ == "__main__":
     torch.manual_seed(args.seed)
 
     logging.basicConfig(level = logging.INFO, format = '%(asctime)s - %(levelname)s - %(message)s')
-    device = torch.device("cuda" if args.cuda else "cpu")
-    logging.info('Device:' + str(device))
+    args.device = torch.device("cuda" if args.cuda else "cpu")
+    logging.info('Device:' + str(args.device))
 
     # Data
     data = DataHandler()
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     layers = [data.feature_size] + [embed_size] * num_layers + [data.label_size]
     
     # Model definition
-    sage = GraphSAGE(layers, data.features, data.adj_lists, args).to(device)
+    sage = GraphSAGE(layers, data.features, data.adj_lists, args).to(args.device)
     
     # Model optimizer
     sage.optimizer = torch.optim.SGD(sage.parameters(), lr = args.lr)
@@ -64,11 +64,11 @@ if __name__ == "__main__":
     for epoch in range(args.num_epochs):
         losses = 0
 
-        nodes = np.concatenate((data.train_nodes, data.valid_nodes), 0) if args.loss_func == 'unsup' else data.train_nodes
+        nodes =  data.train_nodes
         np.random.shuffle(nodes)
         for batch in range(data.train_size // args.batch_size):
             batch_nodes = nodes[batch * args.batch_size : (batch + 1) * args.batch_size]
-            batch_labels = torch.LongTensor(data.labels[np.array(batch_nodes)]).to(device)
+            batch_labels = torch.LongTensor(data.labels[np.array(batch_nodes)]).to(args.device)
 
             start_time = time.time()
 
@@ -92,6 +92,6 @@ if __name__ == "__main__":
 
     sage.eval()
     val_output = sage.forward(data.valid_nodes)
-    logging.info("Validation Macro F1:" +  str(np.round(f1_score(data.labels[data.valid_nodes], val_output.data.numpy().argmax(axis=1), average="macro"), 6)))
-    logging.info("Validation Micro F1:" +  str(np.round(f1_score(data.labels[data.valid_nodes], val_output.data.numpy().argmax(axis=1), average="micro"), 6)))
+    logging.info("Validation Macro F1:" +  str(np.round(f1_score(data.labels[data.valid_nodes], val_output.data.cpu().numpy().argmax(axis=1), average="macro"), 6)))
+    logging.info("Validation Micro F1:" +  str(np.round(f1_score(data.labels[data.valid_nodes], val_output.data.cpu().numpy().argmax(axis=1), average="micro"), 6)))
     logging.info("Average batch time:" + str(np.round(np.mean(times), 6)))

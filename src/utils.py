@@ -53,6 +53,7 @@ def check_device(cuda):
             print('using device', device_id, torch.cuda.get_device_name(device_id))
     device = torch.device("cuda" if cuda else "cpu")
     logging.info('Device:' + str(device))
+    return device
 
 
 

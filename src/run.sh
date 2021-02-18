@@ -1,1 +1,1 @@
-python main_stream.py --data=cora --new_ratio=0.8 --memory_size=250 --ewc_lambda=80.0  --p=10 --alpha=1
+python main_stream.py --data=cora --new_ratio=0.8 --memory_size=250 --ewc_lambda=80.0 

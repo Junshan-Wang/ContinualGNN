@@ -72,7 +72,7 @@ def load_model(data, t, args):
     
     # Load model
     layers = [data.feature_size] + [args.embed_size] * args.num_layers + [data.label_size]
-    model = GraphSAGE(layers, data.features, data.adj_lists, args)
+    model = GraphSAGE(layers, data.features, data.adj_lists, args).to(args.device)
     model.load_state_dict(model_handler.load('graph_sage.pkl'))
     return model
 
@@ -85,7 +85,7 @@ def get_h(model, train_cha_nodes_list, t, args):
     model.sampler.adj_lists = data.adj_lists
     
     # Get embeddings
-    h = model.forward(train_cha_nodes_list).data.numpy()
+    h = model.forward(train_cha_nodes_list).data.cpu().numpy()
     return h
 
 

@@ -19,9 +19,10 @@ class GraphSAGE(nn.Module):
 
         self.layers = layers
         self.num_layers = len(layers) - 2
-        self.in_features = torch.Tensor(in_features) 
+        self.in_features = torch.Tensor(in_features).to(args.device)
         self.adj_lists = adj_lists
         self.num_neg_samples = args.num_neg_samples
+        self.device = args.device
 
         self.convs = nn.ModuleList()
         for i in range(self.num_layers):
@@ -61,7 +62,7 @@ class GraphSAGE(nn.Module):
             nodes_idxs, unique_neighs, mask = self.sampler.sample_neighbors(layer_nodes[0])
             layer_nodes[0] = nodes_idxs
             layer_nodes.insert(0, unique_neighs)
-            layer_mask.insert(0, mask)
+            layer_mask.insert(0, mask.to(self.device))
         return layer_nodes, layer_mask
 
 
